@@ -8,7 +8,6 @@ export async function POST(req) {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
-    // FIX: We upgraded the prompt to be a strict mathematical calculator
     const prompt = `
       You are a strict, professional estimator for a ${niche} business named ${businessName}. 
       A customer needs this job done: "${customerInput}". 
@@ -32,3 +31,5 @@ export async function POST(req) {
   } catch (error) {
     console.error("API Error:", error);
     return NextResponse.json({ quote: "System busy. We will text you shortly to get you a price!" }, { status: 500 });
+  }
+}
