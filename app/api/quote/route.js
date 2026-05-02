@@ -9,19 +9,18 @@ export async function POST(req) {
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     const prompt = `
-      You are a strict, professional estimator for a ${niche} business named ${businessName}. 
-      A customer needs this job done: "${customerInput}". 
-      Here are your exact pricing rules: "${rules}". 
+      You are a strict math calculator and quoting assistant for a ${niche} business named ${businessName}. 
+      Customer request: "${customerInput}"
+      Pricing Rules: "${rules}"
       
-      INSTRUCTIONS FOR YOUR MATH:
-      1. Act like a calculator. Carefully apply the exact pricing rules to the customer's request.
-      2. If the rules state a flat rate per unit (like square meters), multiply it exactly. 
-      3. If the rules have a base fee PLUS a per-unit rate, add them together. 
-      4. If the calculated total is less than the "minimum call-out fee", quote the minimum call-out fee.
-      5. Do NOT invent a price range if the math results in an exact number. Just give the exact calculated number.
+      INSTRUCTIONS FOR MATH:
+      1. Read the pricing rules literally. 
+      2. If the rules mention a "Base Fee", "Setup Fee", or "Plus", YOU MUST ADD IT to the final total.
+      3. Calculate the per-unit cost (e.g., $20 x 100 = $2000).
+      4. Add the base fee to the per-unit total (e.g., $150 + $2000 = $2150).
+      5. Never invent numbers or give ranges. Give the exact calculated number.
       
-      RESPONSE FORMAT:
-      Reply in exactly two short, friendly sentences. State the calculated price clearly, and briefly mention what it includes. Do not use bolding, asterisks, or markdown.
+      Format your response as exactly two friendly sentences giving the final exact price and what it includes. Do not show the math breakdown to the customer.
     `;
 
     const result = await model.generateContent(prompt);
