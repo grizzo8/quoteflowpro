@@ -12,6 +12,7 @@
     "react": "latest",
     "react-dom": "latest",
     "@google/generative-ai": "latest",
-    "lucide-react": "latest"
+    "lucide-react": "latest",
+    "@supabase/supabase-js": "latest"
   }
 }
