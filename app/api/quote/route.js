@@ -7,8 +7,8 @@ export async function POST(req) {
     
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     
-    // FIX: We changed the model name to "gemini-pro" which is universally supported
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    // FIX: Using the brand new 2026 Google model!
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     const prompt = `
       You are a professional quoting assistant for a ${niche} business named ${businessName}. 
