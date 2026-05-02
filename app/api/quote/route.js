@@ -6,7 +6,9 @@ export async function POST(req) {
     const { customerInput, businessName, niche, rules } = await req.json();
     
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    
+    // FIX: We changed the model name to "gemini-pro" which is universally supported
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
     const prompt = `
       You are a professional quoting assistant for a ${niche} business named ${businessName}. 
