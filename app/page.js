@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Settings, Globe, CheckCircle2, Star, Shield, Clock, Wrench, LayoutTemplate, SquareDashedBottom } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
 
-// Hardcoding the public keys so the browser always has them
+// ⚠️ PASTE YOUR SUPABASE KEY HERE AGAIN! ⚠️
 const supabaseUrl = "https://iaoxpdxyfmnegaogufvz.supabase.co";
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlhb3hwZHh5Zm1uZWdhb2d1ZnZ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3MzQ2MDgsImV4cCI6MjA5MzMxMDYwOH0.672Dfq7gL7HlowVnuz8IxMuwK66i-x99YHXnJp8t6EA";
 const supabase = createClient(supabaseUrl, supabaseKey);
@@ -28,7 +28,6 @@ export default function App() {
   const [quote, setQuote] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // CHECK THE URL FOR AN ID WHEN THE PAGE LOADS
   useEffect(() => {
     const fetchClient = async () => {
       const urlParams = new URLSearchParams(window.location.search);
@@ -70,7 +69,6 @@ export default function App() {
   };
   const currentServices = nicheServices[clientData.niche] || nicheServices["Landscaping"];
 
-  // SAVE TO DATABASE
   const saveClient = async () => {
     setIsSaving(true);
     const { data, error } = await supabase.from("clients").insert([{
@@ -90,7 +88,6 @@ export default function App() {
     setIsSaving(false);
   };
 
-  // AI QUOTE GENERATOR
   const generateQuote = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -113,7 +110,8 @@ export default function App() {
     setLoading(false);
   };
 
-  const QuoteWidget = () => (
+  // FIX: Changed from a React Component to a static variable so it stops deleting the text box!
+  const quoteWidgetContent = (
     <div className="bg-white p-8 rounded-3xl shadow-2xl max-w-lg w-full border border-gray-100 relative overflow-hidden transform hover:-translate-y-1 transition duration-300 mx-auto">
       {!quote ? (
         <form onSubmit={generateQuote} className="space-y-5 relative z-10 text-left">
@@ -141,7 +139,6 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
-      {/* Hide the Admin Nav Bar if a client is viewing their generated link */}
       {!isLiveClient && (
         <nav className="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center shadow-sm">
           <h1 className="text-xl font-black text-gray-900">QuoteFlow AI</h1>
@@ -207,9 +204,10 @@ export default function App() {
         </div>
       )}
 
-      {/* LIVE VIEW - DYNAMIC BASED ON TIER */}
       {view === "live" && clientData.productTier === "widget_only" && (
-        <div className="min-h-screen bg-transparent flex items-center justify-center p-4"><QuoteWidget /></div>
+        <div className="min-h-screen bg-transparent flex items-center justify-center p-4">
+          {quoteWidgetContent}
+        </div>
       )}
 
       {view === "live" && clientData.productTier === "full_website" && (
@@ -225,7 +223,7 @@ export default function App() {
             </div>
             <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 mb-6 max-w-4xl tracking-tight">Premium <span className={themeText}>{clientData.niche}</span> Services by {clientData.businessName}</h1>
             <p className="text-xl text-gray-500 mb-12 max-w-2xl">Stop waiting days for a callback. Get an instant estimate right now and book your service today.</p>
-            <QuoteWidget />
+            {quoteWidgetContent}
           </main>
           <section className="py-20 px-8 max-w-7xl mx-auto w-full">
             <div className="text-center mb-16"><h2 className="text-4xl font-bold text-gray-900 mb-4">What We Do</h2><p className="text-lg text-gray-500">Professional {clientData.niche.toLowerCase()} services tailored to your needs.</p></div>
