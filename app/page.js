@@ -3,9 +3,9 @@ import { useState, useEffect } from "react";
 import { Settings, Globe, CheckCircle2, Star, Shield, Clock, Wrench, LayoutTemplate, SquareDashedBottom } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
 
-// Connect to your Supabase Database
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder.supabase.co";
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder";
+// Hardcoding the public keys so the browser always has them
+const supabaseUrl = "https://iaoxpdxyfmnegaogufvz.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlhb3hwZHh5Zm1uZWdhb2d1ZnZ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3MzQ2MDgsImV4cCI6MjA5MzMxMDYwOH0.672Dfq7gL7HlowVnuz8IxMuwK66i-x99YHXnJp8t6EA";
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 export default function App() {
