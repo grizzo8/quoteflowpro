@@ -1,9 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Settings, Globe, CheckCircle2, Star, Shield, Clock, Wrench, LayoutTemplate, SquareDashedBottom } from "lucide-react";
+import { Settings, Globe, CheckCircle2, Star, Shield, Clock, Wrench, LayoutTemplate, SquareDashedBottom, X } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
 
-// ⚠️ PASTE YOUR SUPABASE KEY HERE AGAIN! ⚠️
+// Connect to your Supabase Database
 const supabaseUrl = "https://iaoxpdxyfmnegaogufvz.supabase.co";
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlhb3hwZHh5Zm1uZWdhb2d1ZnZ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3MzQ2MDgsImV4cCI6MjA5MzMxMDYwOH0.672Dfq7gL7HlowVnuz8IxMuwK66i-x99YHXnJp8t6EA";
 const supabase = createClient(supabaseUrl, supabaseKey);
@@ -13,6 +13,10 @@ export default function App() {
   const [isLiveClient, setIsLiveClient] = useState(false);
   const [generatedLink, setGeneratedLink] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+
+  // Modal States
+  const [showPrivacy, setShowPrivacy] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
 
   const [clientData, setClientData] = useState({
     businessName: "",
@@ -110,7 +114,6 @@ export default function App() {
     setLoading(false);
   };
 
-  // FIX: Changed from a React Component to a static variable so it stops deleting the text box!
   const quoteWidgetContent = (
     <div className="bg-white p-8 rounded-3xl shadow-2xl max-w-lg w-full border border-gray-100 relative overflow-hidden transform hover:-translate-y-1 transition duration-300 mx-auto">
       {!quote ? (
@@ -139,6 +142,44 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
+      
+      {/* MODALS FOR PRIVACY AND TERMS */}
+      {showPrivacy && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-60 flex justify-center items-center p-4">
+          <div className="bg-white max-w-2xl w-full rounded-2xl p-8 relative max-h-[80vh] overflow-y-auto">
+            <button onClick={() => setShowPrivacy(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-800"><X className="w-6 h-6" /></button>
+            <h2 className="text-3xl font-bold text-gray-900 mb-6">Privacy Policy</h2>
+            <div className="text-gray-600 space-y-4 text-left">
+              <p>Welcome to {clientData.businessName}. This Privacy Policy explains how we collect, use, and protect your information when you use our website and instant quoting tool.</p>
+              <h3 className="font-bold text-gray-900">Information We Collect</h3>
+              <p>When you request a quote for {clientData.niche.toLowerCase()} services, we collect the details of your project and your contact phone number.</p>
+              <h3 className="font-bold text-gray-900">How We Use Your Information</h3>
+              <p>We use this information exclusively to calculate your estimated quote using AI technology, and to contact you directly via phone or text message to finalize your service request. We do not sell your personal data to third parties.</p>
+              <h3 className="font-bold text-gray-900">Data Security</h3>
+              <p>We implement reasonable security measures to protect your information. By using our quoting tool, you consent to being contacted by {clientData.businessName} regarding your project.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showTerms && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-60 flex justify-center items-center p-4">
+          <div className="bg-white max-w-2xl w-full rounded-2xl p-8 relative max-h-[80vh] overflow-y-auto">
+            <button onClick={() => setShowTerms(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-800"><X className="w-6 h-6" /></button>
+            <h2 className="text-3xl font-bold text-gray-900 mb-6">Terms & Conditions</h2>
+            <div className="text-gray-600 space-y-4 text-left">
+              <p>By using the website and quoting tools provided by {clientData.businessName}, you agree to the following terms and conditions.</p>
+              <h3 className="font-bold text-gray-900">1. AI Estimates are Not Final Contracts</h3>
+              <p>The instant quotes generated on this website are automated estimates based on standard {clientData.niche.toLowerCase()} industry pricing. They are designed to give you a rough idea of cost. **These estimates are NOT legally binding contracts or final offers.**</p>
+              <h3 className="font-bold text-gray-900">2. Final Pricing</h3>
+              <p>Final pricing can only be determined after a representative from {clientData.businessName} has verified the scope of work, inspected the property or project, and issued a formal written quote or invoice.</p>
+              <h3 className="font-bold text-gray-900">3. Service Availability</h3>
+              <p>Service availability, scheduling, and exact costs are subject to change. {clientData.businessName} reserves the right to decline any project or adjust pricing upon physical inspection.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {!isLiveClient && (
         <nav className="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center shadow-sm">
           <h1 className="text-xl font-black text-gray-900">QuoteFlow AI</h1>
@@ -154,7 +195,7 @@ export default function App() {
       )}
 
       {view === "admin" && !isLiveClient && (
-        <div className="max-w-4xl mx-auto mt-12 p-8 bg-white rounded-2xl shadow-xl border border-gray-100">
+        <div className="max-w-4xl mx-auto mt-12 p-8 bg-white rounded-2xl shadow-xl border border-gray-100 mb-12">
           <h2 className="text-3xl font-bold text-gray-800 mb-2">New Client Onboarding</h2>
           <p className="text-gray-500 mb-8">Enter the client's details and select their product tier.</p>
           
@@ -205,9 +246,7 @@ export default function App() {
       )}
 
       {view === "live" && clientData.productTier === "widget_only" && (
-        <div className="min-h-screen bg-transparent flex items-center justify-center p-4">
-          {quoteWidgetContent}
-        </div>
+        <div className="min-h-screen bg-transparent flex items-center justify-center p-4">{quoteWidgetContent}</div>
       )}
 
       {view === "live" && clientData.productTier === "full_website" && (
@@ -246,8 +285,16 @@ export default function App() {
           </section>
           <footer className="bg-gray-900 text-white text-center py-10 mt-auto">
             <h3 className="text-2xl font-bold mb-2">{clientData.businessName}</h3>
-            <p className="text-gray-400 mb-6">Your trusted local {clientData.niche.toLowerCase()} experts.</p>
-            <p className="font-medium text-gray-500 text-sm border-t border-gray-800 pt-6">© 2026 {clientData.businessName}. All Rights Reserved.</p>
+            <p className="text-gray-400 mb-4">Your trusted local {clientData.niche.toLowerCase()} experts.</p>
+            
+            {/* DYNAMIC LEGAL LINKS */}
+            <div className="flex justify-center space-x-6 text-sm text-gray-500 font-medium border-t border-gray-800 pt-6 max-w-md mx-auto">
+              <button onClick={() => setShowPrivacy(true)} className="hover:text-white transition">Privacy Policy</button>
+              <span>|</span>
+              <button onClick={() => setShowTerms(true)} className="hover:text-white transition">Terms & Conditions</button>
+            </div>
+            
+            <p className="font-medium text-gray-600 text-xs mt-6">© 2026 {clientData.businessName}. All Rights Reserved.</p>
           </footer>
         </div>
       )}
