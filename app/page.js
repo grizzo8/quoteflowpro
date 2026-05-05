@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Settings, Globe, CheckCircle2, Star, Shield, Clock, Wrench, LayoutTemplate, SquareDashedBottom, X, MousePointerClick, CalendarCheck, Sparkles, MessageSquare, HelpCircle, ArrowUpCircle } from "lucide-react";
+import { Settings, Globe, CheckCircle2, Star, Shield, Clock, Wrench, LayoutTemplate, SquareDashedBottom, X, MousePointerClick, CalendarCheck, Sparkles, MessageSquare, HelpCircle, ArrowUpCircle, Scissors } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
 
 // Connect to your Supabase Database
@@ -64,8 +64,10 @@ export default function App() {
   const themeBg = colors[clientData.color]?.split(" ")[0] || "bg-blue-600"; 
   const themeText = colors[clientData.color]?.split(" ")[2] || "text-blue-600";
 
+  // ADDED LAWN CARE SEPARATELY FROM LANDSCAPING
   const nicheServices = {
-    Landscaping: ["Lawn Care & Mowing", "Garden Design & Mulch", "Yard Cleanup & Debris Removal"],
+    Landscaping: ["Custom Landscape Design", "Mulch & Stone Installation", "Shrub & Tree Planting"],
+    "Lawn Care": ["Weekly Lawn Mowing", "Edging & Trimming", "Weed Control & Fertilization"],
     Plumbing: ["Emergency Pipe Repair", "Water Heater Installation", "Drain Cleaning & Clearing"],
     "House Cleaning": ["Deep House Cleaning", "Move-In / Move-Out Cleaning", "Recurring Maid Service"],
     Painting: ["Interior Room Painting", "Exterior House Painting", "Cabinet Refinishing"]
@@ -232,7 +234,19 @@ export default function App() {
               <div className="grid grid-cols-2 gap-6 mb-6">
                 <div><label className="block text-sm font-bold text-gray-700 mb-1">Business Name</label><input type="text" value={clientData.businessName} onChange={e => setClientData({...clientData, businessName: e.target.value})} className="w-full p-3 border rounded-lg bg-gray-50 text-black" /></div>
                 <div><label className="block text-sm font-bold text-gray-700 mb-1">Contact Phone</label><input type="text" value={clientData.phone} onChange={e => setClientData({...clientData, phone: e.target.value})} className="w-full p-3 border rounded-lg bg-gray-50 text-black" /></div>
-                <div><label className="block text-sm font-bold text-gray-700 mb-1">Main Service</label><select value={clientData.niche} onChange={e => setClientData({...clientData, niche: e.target.value})} className="w-full p-3 border rounded-lg bg-gray-50 text-black"><option>Landscaping</option><option>Plumbing</option><option>House Cleaning</option><option>Painting</option></select></div>
+                
+                {/* FIX: ADDED LAWN CARE TO DROPDOWN */}
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-1">Main Service</label>
+                  <select value={clientData.niche} onChange={e => setClientData({...clientData, niche: e.target.value})} className="w-full p-3 border rounded-lg bg-gray-50 text-black">
+                    <option value="Landscaping">Landscaping Design</option>
+                    <option value="Lawn Care">Lawn Care & Mowing</option>
+                    <option value="Plumbing">Plumbing</option>
+                    <option value="House Cleaning">House Cleaning</option>
+                    <option value="Painting">Painting</option>
+                  </select>
+                </div>
+                
                 <div><label className="block text-sm font-bold text-gray-700 mb-1">Brand Color</label><select value={clientData.color} onChange={e => setClientData({...clientData, color: e.target.value})} className="w-full p-3 border rounded-lg bg-gray-50 text-black"><option value="blue">Blue</option><option value="green">Green</option><option value="red">Red</option><option value="black">Black</option></select></div>
               </div>
               <div className="mb-8"><label className="block text-sm font-bold text-gray-700 mb-1">Pricing Rules (For the AI)</label><textarea value={clientData.rules} onChange={e => setClientData({...clientData, rules: e.target.value})} className="w-full p-3 border rounded-lg bg-gray-50 h-24 text-black" placeholder="e.g., $150 base fee PLUS $20 per square metre..."></textarea></div>
@@ -256,7 +270,6 @@ export default function App() {
             <a href={`tel:${clientData.phone}`} className={`${themeBg} text-white px-6 py-2 rounded-full font-bold shadow-md hover:opacity-90 transition`}>Call Now: {clientData.phone}</a>
           </header>
 
-          {/* HERO SECTION */}
           <main className="flex flex-col items-center justify-center text-center px-4 py-16 bg-gray-50 border-b border-gray-200">
             <div className="flex items-center space-x-2 mb-4 bg-white px-4 py-1.5 rounded-full border border-gray-200 shadow-sm">
               <Star className={`w-4 h-4 ${themeText} fill-current`} />
@@ -267,7 +280,6 @@ export default function App() {
             {quoteWidgetContent}
           </main>
 
-          {/* TRUST BADGES */}
           <section className={`${themeBg} py-12 px-8 text-white`}>
             <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-8 text-center">
               <div className="flex flex-col items-center"><Shield className="w-12 h-12 mb-4 opacity-90" /><h4 className="text-xl font-bold mb-2">Licensed & Insured</h4><p className="opacity-80 text-sm">Full peace of mind guaranteed on every job.</p></div>
@@ -276,13 +288,15 @@ export default function App() {
             </div>
           </section>
 
-          {/* SERVICES SECTION */}
+          {/* DYNAMIC SERVICES (UPDATED WITH LAWN CARE) */}
           <section className="py-20 px-8 max-w-7xl mx-auto w-full">
             <div className="text-center mb-16"><h2 className="text-4xl font-bold text-gray-900 mb-4">What We Do</h2><p className="text-lg text-gray-500">Professional {clientData.niche.toLowerCase()} services tailored to your needs.</p></div>
             <div className="grid md:grid-cols-3 gap-8">
               {currentServices.map((service, idx) => (
                 <div key={idx} className="bg-white p-8 rounded-2xl border border-gray-100 text-center shadow-sm hover:shadow-xl transition-all duration-300">
-                  <div className={`w-14 h-14 ${themeBg} rounded-full flex items-center justify-center mx-auto mb-6 text-white shadow-md`}><Wrench className="w-6 h-6" /></div>
+                  <div className={`w-14 h-14 ${themeBg} rounded-full flex items-center justify-center mx-auto mb-6 text-white shadow-md`}>
+                    {clientData.niche === "Lawn Care" ? <Scissors className="w-6 h-6" /> : <Wrench className="w-6 h-6" />}
+                  </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-3">{service}</h3>
                   <p className="text-gray-500">Reliable, fast, and guaranteed to exceed your expectations. We treat your property like our own.</p>
                 </div>
@@ -290,7 +304,6 @@ export default function App() {
             </div>
           </section>
 
-          {/* HOW IT WORKS SECTION */}
           <section className="py-20 px-8 bg-gray-50 border-t border-gray-200">
             <div className="max-w-7xl mx-auto w-full">
               <div className="text-center mb-16"><h2 className="text-4xl font-bold text-gray-900 mb-4">How It Works</h2><p className="text-lg text-gray-500">Three simple steps to a better property.</p></div>
@@ -314,7 +327,6 @@ export default function App() {
             </div>
           </section>
 
-          {/* TESTIMONIALS SECTION */}
           <section className="py-20 px-8 max-w-7xl mx-auto w-full">
             <div className="text-center mb-16"><h2 className="text-4xl font-bold text-gray-900 mb-4">Client Testimonials</h2><p className="text-lg text-gray-500">Don't just take our word for it.</p></div>
             <div className="grid md:grid-cols-3 gap-8">
@@ -335,7 +347,6 @@ export default function App() {
             </div>
           </section>
 
-          {/* FAQ SECTION */}
           <section className="py-20 px-8 bg-gray-50 border-t border-gray-200">
              <div className="max-w-4xl mx-auto w-full">
                <div className="text-center mb-12"><h2 className="text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2></div>
@@ -357,7 +368,6 @@ export default function App() {
              </div>
           </section>
 
-          {/* FINAL CTA SECTION */}
           <section className={`${themeBg} py-20 px-8 text-center text-white`}>
             <div className="max-w-3xl mx-auto">
               <h2 className="text-4xl font-extrabold mb-6">Ready to upgrade your property?</h2>
@@ -374,7 +384,6 @@ export default function App() {
             <h3 className="text-2xl font-bold mb-2">{clientData.businessName}</h3>
             <p className="text-gray-400 mb-8">Your trusted local {clientData.niche.toLowerCase()} experts.</p>
             
-            {/* DYNAMIC LEGAL LINKS */}
             <div className="flex justify-center space-x-6 text-sm text-gray-500 font-medium border-t border-gray-800 pt-8 max-w-md mx-auto">
               <button onClick={() => setShowPrivacy(true)} className="hover:text-white transition">Privacy Policy</button>
               <span>|</span>
